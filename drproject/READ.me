@@ -1,0 +1,27 @@
+
+Running the project:
+1. save a folder a folder called "data" parallel to "aptos" folder. make a folder called "raw" in "data". inside "raw" there should be "test_images" folder with test dataset, "train_images" folder with train dataset and 2 files test.csv and train.csv
+2. first you need to preprocess the dataset by running aptos/preprocess.py for 3 channel and aptos/preprocess-6channel.py for 6 channel fusion
+3. It will create a folder inside "data" called "preprocess". inside preprocess there will be a new folder with preprocessed with the same name as PROCESS_DIR parameter inside preprocess.py and preprocess-6channel.py
+4. run aptos/main.py to start the training.
+5. after training is done, the models of different epochs will be saved in folder "/saved" parallel to "aptos". "saved" will have a folder named "aptos" and checkpoint folders for different dates. take the model from there.
+6. replace the path in ur files
+7. visualize the preprocessed images to view how they look.
+
+
+Uploading on kaggle:
+1. notebook should have no internet connection
+2. add as input this to the notebook: APTOS 2019 Blindness Detection (competition dataset), config file and  folder unzipped efficientnet_pytorch.zip (as datasets), files with downloaded weights because notebook should be offline efficientnet-b2-8bb594d6.pth and efficientnet-b5-b6417697.pth, and upload the generated trained model of this code too.
+3. Sample of notebook: see file called NotebookSample.py for 3 channel rgb model
+
+my best results: RGB Private:0.880614 Public:0.704747
+Greyscale: Private 0.807669, Public 0.708375
+HSV: Private 0.716805, Public 0.437670
+6 channel RGB HSV convert_to_6ch_from_rgb function: Private 0.780577, public 0.513428
+6 channel RGB YCBCR CLAHE WEIGHTS:Private 0.760608, Public: 0.520863
+
+
+Dont use Ensemble, it is too computationally heavy to have many models.
+Final result of 6 channel fusion should outperform RGB 0.880614.
+
+

@@ -1,0 +1,63 @@
+short_name: aptos
+n_gpu: 1
+save_dir: saved
+seed: 12346
+
+
+arch:
+  type: EffNet
+  args:
+    model: b2            # tried to simply change b2 to b5, didnt improve anything maybe i didnt finetune properly
+    num_classes: 1
+    pretrained: true
+    verbose: 0
+
+data_loader:
+  type: NpyDataLoader
+  args:
+    batch_size: 16       #tried to reduce batchsize with 512 resolution to handle memory error but it ruined qwk even with lower learning rate
+    epoch_size: 60
+    data_dir: data/preprocessed
+    num_workers: 2
+    validation_split: 0.05
+    img_size: 256        #tried to make 512 resolution but it gives cuda memory error
+    alpha: 0.7
+    verbose: 2
+
+metrics:
+- quadratic_weighted_kappa
+- conf_matrix
+- accuracy
+- mse
+
+loss: mse_loss  # ignore mse_loss because i use SmoothL1loss which made kaggle score better (from 0.87 to 0.88 in rgb dataset) Line 71 in main.py.
+
+optimizer:
+  type: Ranger      # is RAdam + LookAhead
+  args:
+    lr: 0.0008
+    weight_decay: 0.0005
+
+lr_scheduler:
+  type: CosineAnnealingScheduler
+  args:
+    start_lr: 0.0005
+    start_anneal: 4
+    n_epochs: 25
+
+training:
+  epochs: 25
+  noise_std: 0.10
+  save_period: 1
+  tensorboard: true
+  verbose: 1
+
+testing:
+  data_dir: data/raw
+  ensemble_size: 2
+  batch_size: 16       #tried to reduce batchsize with 512 resolution to handle memory error but it ruined qwk even with lower learning rate
+  img_size: 256        #tried to make 512 resolution but it gives cuda memory error
+  num_workers: 2
+  verbose: 2
+
+
