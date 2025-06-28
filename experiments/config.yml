@@ -1,0 +1,69 @@
+short_name: aptos
+n_gpu: 1
+save_dir: saved
+seed: 12346
+
+
+arch:
+  type: EffNet
+  args:
+    model: b5
+    num_classes: 1
+    pretrained: true
+    verbose: 0
+
+data_loader:
+  type: NpyDataLoader
+  args:
+    batch_size: 4
+    epoch_size: 60
+    data_dir: data/preprocessed
+    num_workers: 2
+    validation_split: 0.05
+    img_size: 512
+    alpha: 0.7
+    verbose: 2
+
+metrics:
+- quadratic_weighted_kappa
+- conf_matrix
+- accuracy
+- mse
+
+loss: mse_loss   # focal loss - for class imbalance
+
+optimizer:
+  #type: AdamW    ADAM
+  type: Ranger
+  args:
+    lr: 0.0008
+    #lr: 0.0001   0.1 e-3, e-4
+    weight_decay: 0.0005    # 0.1 e-4
+    #weight_decay: 0.01
+
+lr_scheduler:
+  type: CosineAnnealingScheduler
+  args:
+    start_lr: 0.0005
+    #start_lr: 0.00005
+    start_anneal: 4
+    n_epochs: 25
+
+training:
+  epochs: 25
+  noise_std: 0.10
+  #noise_std: 0
+  save_period: 1
+  tensorboard: true
+  verbose: 1
+
+testing:
+  data_dir: data/raw
+  ensemble_size: 2
+  batch_size: 4
+  img_size: 512  # scale to 512px
+  num_workers: 2
+  verbose: 2
+
+
+  # when using augmentation try probability 0.5
